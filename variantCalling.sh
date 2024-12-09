@@ -5,14 +5,10 @@ bowtie2-build ${ref} ${refidx}
 
 # Bowtie2 alignment 
 for file_1 in ${read}/*_1.fq.gz; do 
-    file_2="${file_1%_1.fq.gz}_2.fq.gz" 
-    if [ -f "$file_2" ]; then 
-      base_name=$(basename "$file_1" _1.fq.gz)    
-      OUTPUT="${base_name}.sam"   
-      bowtie2 -x ${refidx} -1 "$file_1" -2 "$file_2" -S "${aligned_read}/${OUTPUT}" --local -p 4 
-    else 
-      echo "$file_2 not found" 
-    fi 
+	file_2="${file_1%_1.fq.gz}_2.fq.gz" 
+	base_name=$(basename "$file_1" _1.fq.gz)    
+      	OUTPUT="${base_name}.sam"   
+      	bowtie2 -x ${refidx} -1 "$file_1" -2 "$file_2" -S "${aligned_read}/${OUTPUT}" --local -p 4 
 done
 
 echo "Convert sam to bam and sort"
@@ -32,7 +28,7 @@ for file in ${bam}/*_sorted.bam; do
     OUTPUT="${bam}/${base_name}_sorted_rg.bam" \ 
     RGID=${i} \ 
     RGLB=${i} \ 
-    RGPL="${platform}" \ 
+    RGPL=Illumina \ 
     RGPU=1 \ 
     RGSM="${base_name}" 
    ((i+=1)) 
@@ -91,8 +87,6 @@ gatk VariantFiltration \
     --filter-name "ReadPosRankSum_filter" -filter "ReadPosRankSum < -8.0" \ 
     -genotype-filter-expression "DP < 5" \ 
     -genotype-filter-name "LowDP_filter" \ 
-    -genotype-filter-expression "DP > 200" \ 
-    -genotype-filter-name "HighDP_filter" \ 
     -genotype-filter-expression "GQ < 10" \ 
     -genotype-filter-name "GQ_filter"
 
