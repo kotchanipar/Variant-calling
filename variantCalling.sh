@@ -1,3 +1,29 @@
+echo "Data preparation"
+
+## Download genome reference file
+wget -P /path/to/reference/dir https://ftp.ncbi.nlm.nih.gov/link/to/reference/genome.fasta 
+gunzip /path/to/reference/dir/reference_genome.fna.gz
+
+## Index genome reference - .fai file
+samtools faidx /path/to/reference/dir/reference_genome.fna
+
+## Create .dict file for genome reference
+gatk CreateSequenceDictionary \
+    -R /path/to/reference/dir/reference_genome.fna \
+    -O /path/to/reference/dir/reference_genome.dict
+
+# Insert directories containing only the reference and reads for calling SNPs
+ref="path/to/reference/dir/reference_genome.fna"
+read="/path/to/read/dir"
+
+# Naming reference index file
+refidx="/path/to/reference/dir/ref_index_name"
+
+# Output directories
+aligned_read="/path/to/alignment/output/dir"
+bam="/path/to/bam/output/dir"
+results="/path/to/gatk/output/dir"
+
 echo "Mapping using Bowtie2"
 
 # Bowtie2 Index reference
